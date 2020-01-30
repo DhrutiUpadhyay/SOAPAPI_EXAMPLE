@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <definitions> must be the root of the WSDL document 
+The targetNamespace is a convention of XML Schema that enables the WSDL document to refer to itself.
+default namespace: xmlns. All elements without a namespace prefix, such as message or portType, are therefore assumed to be a part of the default WSDL namespace.
+numerous namespaces that are used throughout the remainder of the document.
+-->
+<wsdl:definitions targetNamespace="http://tempuri.org/" 
+  xmlns:s="http://www.w3.org/2001/XMLSchema" 
+  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" 
+  xmlns:tns="http://tempuri.org/" 
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+  xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" 
+  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <!-- WSDL TYPES: definition of the data types that are used in the web service -->
+  <!-- Inside the `<wsdl:types>` we define the data types the service will use. -->
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <!-- `<s:element>` specify the type, name and number of them using  -->
+      <s:element name="WelcomeUserRequest">
+        <s:complexType>
+          <s:sequence>
+            <!-- means that we have a parameter called userName, that occurs exacly 1 time, and is of type `string`. -->
+            <s:element minOccurs="1" maxOccurs="1" name="userName" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="WelcomeUserResponse">
+        <s:complexType>
+          <s:sequence>
+          <!-- maxOccurs="unbounded" refers that it may repeat an unlimited number of times.-->
+            <s:element minOccurs="1" maxOccurs="unbounded" name="result" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <!-- MESSAGES: defines the data being exchanged between the service and client -->
+  <wsdl:message name="WelcomeUserSoapIn">
+    <wsdl:part name="parameters" element="tns:WelcomeUserRequest"/>
+  </wsdl:message>
+  <wsdl:message name="WelcomeUserSoapOut">
+    <wsdl:part name="parameters" element="tns:WelcomeUserResponse"/>
+  </wsdl:message>
+  <!-- PORT TYPES: defines the complete communication operation (one way/round trip),
+  which combines multiple elements to form a complete one-way or round-trip operation. -->
+  <wsdl:portType name="WelcomeUserServiceSoapPort">
+    <!-- The operation name must be the same as the one specified in the service object -->
+    <wsdl:operation name="WelcomeUserFunction">
+      <wsdl:input message="tns:WelcomeUserSoapIn"/>
+      <wsdl:output message="tns:WelcomeUserSoapOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <!-- BINDING: provides details on how a portType operation will actually be transmitted -->
+  <wsdl:binding name="WelcomeUserServiceSoapBinding" type="tns:WelcomeUserServiceSoapPort">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <!-- the `name` and the `soapAction` have to be the same as the name
+      specified in the `<wsdl:operation>` inside the `<wsdl:portType>` -->
+    <wsdl:operation name="WelcomeUserFunction">
+      <soap:operation soapAction="WelcomeUserFunction" style="document"/>
+      <wsdl:input>
+        <!-- "soap:body" is used to provide information on how 
+          the content of the SOAP Body element is constructed.-->
+        <!--use="literal", the message part(s) are referring to concrete schema definition(s)
+          and no encoding is needed-->
+        <!--use="encoded", the message part(s) are referring to abstract schema definition(s)
+          and concrete message can be produced by applying the specified encoding style.-->
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <!-- SERVICE: defines the port supported by the web service -->
+  <wsdl:service name="WelcomeUserService">
+    <!--`<wsdl:port>` has 2 elements: a `name` and a `binding`. 
+      The `name` has to be unique among all the ports,
+      the `binding` must refer to a binding previously defined.-->
+      <!--`<wsdl:service name>` and the port `<wsdl:port name>` must match the names specified in `app.js`-->
+    <wsdl:port name="WelcomeUserServiceSoapPort" binding="tns:WelcomeUserServiceSoapBinding">
+      <soap:address location="http://localhost:8000/wsdl?wsdl"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,16 @@
+{
+  "name": "soap-api-example",
+  "version": "1.0.0",
+  "description": "demo for soap web service api",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dhruti.upadhyay",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "soap": "^0.30.0"
+  }
+}
